@@ -1,11 +1,26 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/game"><p class="navBarLink">Play</p></router-link>
-      <router-link to="/"><p id="scopa">SCOPA</p></router-link>
-      <router-link to="/profile"><p class="navBarLink">Profile</p></router-link>
+      <router-link to="/game">
+        <div id="gameLink">
+          <img id="italyPic" src="/images/italy.png" />
+        </div>
+      </router-link>
+
+      <router-link to="/">
+        <div id="mainLink">
+          <p id="scopa">SCOPA</p>
+        </div>
+      </router-link>
+
+      <router-link to="/profile">
+        <div id="profileLink">
+          <p id="profile">Profile</p>
+        </div>
+      </router-link>
     </div>
     <router-view></router-view>
+
     <hr />
     <div id="footer">
       <p>I spent __ hours on this website</p>
@@ -18,14 +33,32 @@
 <style>
 * {
 }
-.navBarLink {
-  color: white;
+
+#nav {
+  padding: 30px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: #555b6e;
+  align-items: center;
+}
+
+#gameLink {
+  width: 33%;
+}
+
+#italyPic {
+  width: 100%;
 }
 
 #scopa {
   font-size: 2em;
   color: #bf211e;
   text-decoration: none;
+}
+
+#profile {
+  color: white;
 }
 
 #app {
@@ -36,18 +69,9 @@
   color: #2c3e50;
 }
 
-#nav {
-  padding: 30px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  background-color: #555b6e;
-}
-
 #nav a {
-  font-weight: bold;
-  color: #2c3e50;
   text-decoration: none;
+  width: 33%;
 }
 
 #footer {
