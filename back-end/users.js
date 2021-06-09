@@ -14,15 +14,15 @@ const router = express.Router();
 // This is the schema. Users have usernames and passwords. We solemnly promise to
 // salt and hash the password!
 const userSchema = new mongoose.Schema({
-    firstName: String,
-    lastName: String,
-    username: String,
-    password: String,
     gameStats: {
         type: mongoose.Schema.ObjectId,
         ref: "gameStats",
     },
-    profilePath: "",
+    firstName: String,
+    lastName: String,
+    username: String,
+    password: String,
+    profilePath: String,
 });
 
 // This is a hook that will be called before a user record is saved,
@@ -128,19 +128,19 @@ router.post("/", async(req, res) => {
                 message: "username already exists",
             });
         // create a new user and save it to the database
-
-        const newGameStats = new gameStats({
+        const stats = new gameStats({
             gamesWon: 0,
             gamesLost: 0,
             wonScopas: 0,
             setebellos: 0,
         });
+
         const user = new User({
+            gameStats: stats,
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             username: req.body.username,
             password: req.body.password,
-            gameStats: newGameStats,
             profilePath: "",
         });
         await user.save();

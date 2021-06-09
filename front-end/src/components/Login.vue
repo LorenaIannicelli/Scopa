@@ -78,7 +78,6 @@ export default {
           password: this.password,
           profilePath: "",
         });
-        console.log(response.data.user);
         this.$root.$data.user = response.data.user;
       } catch (error) {
         this.error = error.response.data.message;

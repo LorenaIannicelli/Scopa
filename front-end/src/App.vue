@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/game">
+      <router-link to="/play">
         <div id="gameLink">
           <img id="italyPic" src="/images/italy.png" />
         </div>

@@ -8,11 +8,21 @@
 <script>
 import Login from "@/components/Login.vue";
 import UserProfile from "@/components/UserProfile.vue";
+import axios from "axios";
 export default {
   name: "profile",
   components: {
     UserProfile,
     Login,
+  },
+  async created() {
+    this.gameInSession = false;
+    try {
+      let response = await axios.get("/api/users");
+      this.$root.$data.user = response.data.user;
+    } catch (error) {
+      this.$root.$data.user = null;
+    }
   },
 
   computed: {
