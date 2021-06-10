@@ -19,6 +19,10 @@
           <!-- <img src="/images/backOfCard.jpg" /> -->
           <img :src="card.Path" />
         </div>
+        <div v-if="cpuWonCards.length > 0">
+          <img src="/images/backOfCard.jpg" />
+          <p class="cardCount">{{ cpuWonCards.length }}</p>
+        </div>
       </div>
       <div id="tableCards">
         <div v-for="card in tableCards" v-bind:key="card._id">
@@ -28,6 +32,10 @@
       <div id="playerCards">
         <div v-for="card in playerActiveCards" v-bind:key="card._id">
           <img :src="card.Path" v-on:click="imageClicked(card)" />
+        </div>
+        <div v-if="playerWonCards.length > 0">
+          <img src="/images/backOfCard.jpg" />
+          <p class="cardCount">{{ playerWonCards.length }}</p>
         </div>
       </div>
     </div>
@@ -153,24 +161,15 @@ export default {
     },
 
     play(card) {
-      if (this.playerActiveCards.length > 0 && this.cpuActiveCards.length > 0) {
-        this.playerTurn = true;
+      if (
+        this.playerActiveCards.length > 0 &&
+        this.cpuActiveCards.length > 0 &&
+        this.playerTurn
+      ) {
         this.playedCard = card;
         this.determinePoints();
         this.playerTurn = false;
-
-        setTimeout(this.executeCPUMove, 6000);
-      }
-      if (
-        this.playerActiveCards.length == 0 &&
-        this.cpuActiveCards.length == 0 &&
-        this.deck.length > 0
-      ) {
-        console.log("in the deal functiono!");
-        this.deal();
-      } else if (this.deck.length == 0) {
-        this.finishedGame = true;
-        this.gameInSession = false;
+        setTimeout(this.executeCPUMove(), 1000000000);
       }
     },
 
@@ -178,6 +177,17 @@ export default {
       let cpuIndex = this.determineCPUMove();
       this.playedCard = this.cpuActiveCards[cpuIndex];
       this.determinePoints();
+      if (
+        this.cpuActiveCards.length == 0 &&
+        this.playerActiveCards.length == 0 &&
+        this.deck.length > 0
+      ) {
+        this.deal();
+      } else if (this.deck.length == 0) {
+        this.finishedGame = true;
+        this.gameInSession = false;
+      }
+      this.playerTurn = true;
     },
 
     //returns index of card to play
@@ -290,7 +300,7 @@ export default {
             }
             //remove cards from table
             this.tableCards.splice(i, 1);
-            this.tableCards.splice(j, 1);
+            this.tableCards.splice(j - 1, 1);
             this.playedCard = null;
             return;
           }
@@ -328,18 +338,24 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  background-color: #bf211e;
+  height: 30%;
 }
 
 #tableCards {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  background-color: #f4edea;
+  height: 30%;
 }
 
 #playerCards {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  background-color: #134611;
+  height: 30%;
 }
 
 img {
@@ -348,5 +364,8 @@ img {
 
 #clickToPlay {
   height: 50em;
+}
+.cardCount {
+  color: #f4edea;
 }
 </style>

@@ -2,7 +2,7 @@
   <div class="home">
     <div id="welcome">
       <p id="ciao">Ciao!</p>
-      <p id="welcome">Benevenuti a Scopa ~~ Welcome to Scopa!</p>
+      <p id="welcome">Benvenuti a Scopa ~~ Welcome to Scopa!</p>
     </div>
     <div id="funFacts">
       <p>Scopa Fun Facts:</p>
@@ -31,6 +31,60 @@
     </div>
     <div id="cards">
       <p>Understanding the cards:</p>
+      <ul>
+        <li>
+          There are 40 cards in the Italian deck: 4 suits with values 1-10. Here
+          they are in order:
+        </li>
+        <div id="suits">
+          <img class="card" src="/images/cards/cups_1.jpg" />
+          <img class="card" src="/images/cards/cups_2.jpg" />
+          <img class="card" src="/images/cards/cups_3.jpg" />
+          <img class="card" src="/images/cards/cups_4.jpg" />
+          <img class="card" src="/images/cards/cups_5.jpg" />
+        </div>
+        <div id="suits">
+          <img class="card" src="/images/cards/cups_6.jpg" />
+          <img class="card" src="/images/cards/cups_7.jpg" />
+          <img class="card" src="/images/cards/cups_l.jpg" />
+          <img class="card" src="/images/cards/cups_h.jpg" />
+          <img class="card" src="/images/cards/cups_k.jpg" />
+        </div>
+        <li>The suits are: Spade, Coppe, Denari, and Bastoni</li>
+        <div id="suits">
+          <img class="card" src="/images/cards/clubs_4.jpg" />
+          <img class="card" src="/images/cards/cups_4.jpg" />
+          <img class="card" src="/images/cards/coins_4.jpg" />
+          <img class="card" src="/images/cards/swords_4.jpg" />
+        </div>
+        <li>
+          There are 3 face-cards in the deck: ladies (8), horses (9), and kings
+          (10) (you can tell the ladies from the kings by their crowns)
+        </li>
+        <div id="suits">
+          <img class="card" src="/images/cards/clubs_l.jpg" />
+          <img class="card" src="/images/cards/cups_h.jpg" />
+          <img class="card" src="/images/cards/coins_k.jpg" />
+        </div>
+        <li>
+          The denari suit is special: it gives you extra points! Notice how the
+          one in denari looks a little different
+        </li>
+        <div id="suits">
+          <img class="card" src="/images/cards/coins_1.jpg" />
+          <img class="card" src="/images/cards/coins_2.jpg" />
+          <img class="card" src="/images/cards/coins_3.jpg" />
+          <img class="card" src="/images/cards/coins_4.jpg" />
+          <img class="card" src="/images/cards/coins_5.jpg" />
+        </div>
+        <div id="suits">
+          <img class="card" src="/images/cards/coins_6.jpg" />
+          <img class="card" src="/images/cards/coins_7.jpg" />
+          <img class="card" src="/images/cards/coins_l.jpg" />
+          <img class="card" src="/images/cards/coins_h.jpg" />
+          <img class="card" src="/images/cards/coins_k.jpg" />
+        </div>
+      </ul>
     </div>
     <div id="howToPlay">
       <p>How to play Scopa:</p>
@@ -136,5 +190,18 @@ export default {
   text-align: left;
   padding-right: 1em;
   padding-left: 1em;
+}
+
+#suits {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.card {
+  width: 10%;
+  margin-right: 1em;
+  margin-top: 1em;
+  margin-bottom: 1em;
 }
 </style>
