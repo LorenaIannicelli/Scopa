@@ -2,16 +2,21 @@
   <div>
     <p>Ciao {{ user.firstName }} {{ user.lastName }}</p>
     <div id="profileInfo">
-      <img src="user.profilePath" v-if="user.profilePath" !="" />
-      <i class="fas fa-user-astronaut fa-5x"></i>
+      <img
+        id="profilePic"
+        :src="user.profilePath"
+        v-if="user.profilePath != ''"
+      />
+      <i v-else class="fas fa-user-astronaut fa-5x"></i>
     </div>
     <button
       type="submit"
       class="pure-button pure-button-primary"
-      @click.prevent="updateProfileImg"
+      @click.prevent="uploadProfilePic"
     >
       Update Profile Picture
     </button>
+    <upload :show="show" @close="close" @uploadFinished="uploadFinished" />
     <button
       type="submit"
       class="pure-button pure-button-primary"
@@ -20,23 +25,60 @@
       Remove Profile Picture
     </button>
     <div id="stats">
-      <p>Games won: {{ user.gameStats.gamesWon }}</p>
-      <p>Games lost: {{ user.gameStats.gamesLost }}</p>
+      <p>Games won: {{ playerStats.gamesWon }}</p>
+      <p>Games lost: {{ playerStats.gamesLost }}</p>
       <p>Games played: {{ gamesPlayed }}</p>
     </div>
   </div>
 </template>
 
 <script>
+import Upload from "@/components/Upload.vue";
+import axios from "axios";
 export default {
   name: "UserProfile",
+  components: {
+    Upload,
+  },
+  async created() {
+    try {
+      let response = await axios.get("/api/playerStats");
+      this.playerStats = response.body.playerStats;
+    } catch (error) {
+      this.$root.$data.user = null;
+    }
+  },
+  data() {
+    return {
+      show: false,
+      playerStats: Object,
+    };
+  },
   computed: {
     user() {
       return this.$root.$data.user;
     },
     gamesPlayed() {
-      let myStats = this.user.gameStats;
-      return myStats.gamesWon + myStats.gamesLost;
+      return this.playerStats.gamesWon + this.playerStats.gamesLost;
+    },
+  },
+  methods: {
+    uploadProfilePic() {
+      this.show = true;
+    },
+    async uploadFinished() {
+      this.show = false;
+    },
+    close() {
+      this.show = false;
+    },
+    async deleteProfileImg() {
+      try {
+        await axios.delete("/api/users/profilePic");
+        this.$root.user.profilePath = "";
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
 };
@@ -51,5 +93,9 @@ button {
 #stats {
   text-align: left;
   margin-left: 2em;
+}
+
+#profilePic {
+  width: 20%;
 }
 </style>

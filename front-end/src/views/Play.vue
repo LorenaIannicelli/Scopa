@@ -8,6 +8,31 @@
       >
         Click to play!
       </button>
+      <button
+        type="submit"
+        class="pure-button pure-button-primary"
+        @click.prevent="post"
+      >
+        Click to post!
+      </button>
+    </div>
+    <div id="results" v-if="!gameInSession && finishedGame">
+      <p>Opponent's points:</p>
+      <div v-for="award in cpuAwards" v-bind:key="award._id">
+        <p>{{ award }}</p>
+      </div>
+      <p>Your points:</p>
+      <div v-for="award in playerAwards" v-bind:key="award._id">
+        <p>{{ award }}</p>
+      </div>
+      <p>{{ winMessage }}</p>
+      <button
+        type="submit"
+        class="pure-button pure-button-primary"
+        @click.prevent="startGame"
+      >
+        Click to play again!
+      </button>
     </div>
     <div v-else>
       <div>
@@ -25,7 +50,10 @@
         </div>
       </div>
       <div id="tableCards">
-        <div v-for="card in tableCards" v-bind:key="card._id">
+        <div v-if="tableCards.length == 0">
+          <p id="table">!!Scopa!!</p>
+        </div>
+        <div v-else v-for="card in tableCards" v-bind:key="card._id">
           <img :src="card.Path" />
         </div>
       </div>
@@ -65,6 +93,11 @@ export default {
       cpuPoints: Number,
       playerPoints: Number,
       playedCard: Object,
+      playerPickedLast: Boolean,
+      cpuAwards: [],
+      playerAwards: [],
+      winMessage: String,
+      playerWon: Boolean,
     };
   },
   async created() {
@@ -86,6 +119,9 @@ export default {
     startGame() {
       this.gameInSession = true;
       this.finishedGame = false;
+      this.playerAwards = [];
+      this.cpuAwards = [];
+      this.playerWon = false;
       this.initializePoints();
       this.getDeck();
       this.shuffle();
@@ -160,7 +196,7 @@ export default {
       this.play(card);
     },
 
-    play(card) {
+    async play(card) {
       if (
         this.playerActiveCards.length > 0 &&
         this.cpuActiveCards.length > 0 &&
@@ -169,7 +205,7 @@ export default {
         this.playedCard = card;
         this.determinePoints();
         this.playerTurn = false;
-        setTimeout(this.executeCPUMove(), 1000000000);
+        await setTimeout(this.executeCPUMove, 5000);
       }
     },
 
@@ -183,9 +219,14 @@ export default {
         this.deck.length > 0
       ) {
         this.deal();
-      } else if (this.deck.length == 0) {
+      } else if (
+        this.deck.length == 0 &&
+        this.cpuActiveCards.length == 0 &&
+        this.playerActiveCards.length == 0
+      ) {
         this.finishedGame = true;
         this.gameInSession = false;
+        this.endGame();
       }
       this.playerTurn = true;
     },
@@ -205,16 +246,16 @@ export default {
 
         //there was no match, check if playedCard is sum
         for (let x = 0; x < this.tableCards.length - 1; x++) {
-          for (let j = x; j < this.tableCards.length; j++) {
+          for (let j = x + 1; j < this.tableCards.length; j++) {
             let sum = this.tableCards[x] + this.tableCards[j];
             if (playedCard.Value == sum) {
               return i;
             }
           }
         }
-        //there were no good moves
-        return 0;
       }
+      //there were no good moves
+      return 0;
     },
     determinePoints() {
       //first, find index in hand
@@ -236,14 +277,13 @@ export default {
             index = i;
         }
       }
-      console.log("The index is " + index);
       //check if there is a match on the table!!!
       for (let i = 0; i < this.tableCards.length; i++) {
         if (this.playedCard.Value == this.tableCards[i].Value) {
           let wonHandCard = {
             Value: this.playedCard.Value,
-            Suit: this.playedCard.suit,
-            Path: this.playedCard.path,
+            Suit: this.playedCard.Suit,
+            Path: this.playedCard.Path,
           };
           //player's turn
           if (this.playerTurn) {
@@ -254,6 +294,7 @@ export default {
             if (this.checkForScopa(1)) {
               this.incrementPlayerPoints();
             }
+            this.playerPickedLast = true;
           }
           //cpu's turn
           else {
@@ -264,6 +305,7 @@ export default {
             if (this.checkForScopa(1)) {
               this.incrementCPUPoints();
             }
+            this.playerPickedLast = false;
           }
           this.tableCards.splice(i, 1);
           this.playedCard = null;
@@ -273,13 +315,13 @@ export default {
 
       //there was no match, check if playedCard is sum
       for (let i = 0; i < this.tableCards.length - 1; i++) {
-        for (let j = i; j < this.tableCards.length; j++) {
+        for (let j = i + 1; j < this.tableCards.length; j++) {
           let sum = this.tableCards[i].Value + this.tableCards[j].Value;
           if (this.playedCard.Value == sum) {
             let wonHandCard = {
               Value: this.playedCard.Value,
-              Suit: this.playedCard.suit,
-              Path: this.playedCard.path,
+              Suit: this.playedCard.Suit,
+              Path: this.playedCard.Path,
             };
             if (this.playerTurn) {
               this.playerWonCards.push(wonHandCard);
@@ -289,6 +331,7 @@ export default {
               if (this.checkForScopa(2)) {
                 this.incrementPlayerPoints();
               }
+              this.playerPickedLast = true;
             } else {
               this.cpuWonCards.push(wonHandCard);
               this.cpuWonCards.push(this.tableCards[i]);
@@ -297,6 +340,7 @@ export default {
               if (this.checkForScopa(2)) {
                 this.incrementCPUPoints();
               }
+              this.playerPickedLast = false;
             }
             //remove cards from table
             this.tableCards.splice(i, 1);
@@ -328,6 +372,149 @@ export default {
 
     incrementCPUPoints() {
       this.cpuPoints += 1;
+    },
+
+    calculateScore() {
+      //if cards are still on the table
+      if (this.tableCards.length > 0) {
+        let numCards = this.tableCards.length;
+        //user picked up cards last, they get the rest
+        if (this.playerPickedLast) {
+          //go through all the cards
+          for (let i = 0; i < numCards; i++) {
+            this.playerWonCards.push(this.tableCards[0]);
+            this.tableCards.splice(0, 1);
+          }
+        } else {
+          //go through all the cards
+          for (let i = 0; i < numCards; i++) {
+            this.cpuWonCards.push(this.tableCards[0]);
+            this.tableCards.splice(0, 1);
+          }
+        }
+      }
+
+      let playerSevens = 0;
+      let cpuSevens = 0;
+      let playerDenari = 0;
+      let cpuDenari = 0;
+      let playerHadSetebello = false;
+
+      //figure out how many of each points player had
+      for (let i = 0; i < this.playerWonCards.length; i++) {
+        if (this.playerWonCards[i].Suit == "coins") {
+          playerDenari++;
+        }
+        if (this.playerWonCards[i].Value == 7) {
+          playerSevens++;
+        }
+        if (
+          this.playerWonCards[i].Value == 7 &&
+          this.playerWonCards[i].Suit == "coins"
+        ) {
+          playerHadSetebello = true;
+        }
+      }
+
+      //assign scopa points
+      if (this.playerPoints > 0) {
+        this.playerAwards.push("Scopa X" + this.playerPoints);
+      }
+
+      if (this.cpuPoints > 0) {
+        this.cpuAwards.push("Scopa X" + this.cpuPoints);
+      }
+
+      //figure out how many of each points cpu had
+      for (let i = 0; i < this.cpuWonCards.length; i++) {
+        if (this.cpuWonCards[i].Suit == "coins") {
+          cpuDenari++;
+        }
+        if (this.cpuWonCards[i].Value == 7) {
+          cpuSevens++;
+        }
+      }
+
+      //determine who had mostCards
+      if (this.playerWonCards.length > this.cpuWonCards.length) {
+        this.incrementPlayerPoints();
+        this.playerAwards.push("Most Cards");
+      } else if (this.cpuWonCards.length > this.playerWonCards.length) {
+        this.incrementCPUPoints();
+        this.cpuAwards.push("Most Cards");
+      }
+
+      //determine who had the most sevens
+      if (playerSevens > cpuSevens) {
+        this.incrementPlayerPoints();
+        this.playerAwards.push("Primiera (most sevens)");
+      } else if (cpuSevens > playerSevens) {
+        this.incrementCPUPoints();
+        this.cpuAwards.push("Primiera (most sevens)");
+      }
+
+      //determine who had the most coins
+      if (playerDenari > cpuDenari) {
+        this.incrementPlayerPoints();
+        this.playerAwards.push("Denari (most coins)");
+      } else if (cpuDenari > playerDenari) {
+        this.incrementCPUPoints();
+        this.cpuAwards.push("Denari (most coins)");
+      }
+
+      if (playerHadSetebello) {
+        this.incrementPlayerPoints();
+        this.playerAwards.push("Setebello");
+      } else {
+        this.incrementCPUPoints();
+        this.cpuAwards.push("Setebello");
+      }
+      if (this.playerPoints > this.cpuPoints) {
+        this.winMessage = "You won!";
+        this.playerWon = true;
+      } else if (this.cpuPoints > this.playerPoints) {
+        this.winMessage = "You lost :(";
+      } else {
+        this.winMessage = "tie!";
+      }
+    },
+    async endGame() {
+      let gamesLost = 0;
+      let gamesWon = 0;
+      let wonScopas = 0;
+      let setebellos = this.playerPoints;
+      this.calculateScore();
+      //calculate point values
+      if (this.playerWon) {
+        gamesWon = 1;
+      } else {
+        gamesLost = 1;
+      }
+      if (this.playerHadSetebello) {
+        setebellos = 1;
+      }
+      try {
+        await axios.post("/api/playerStats/", {
+          gamesLost: gamesLost,
+          gamesWon: gamesWon,
+          wonScopas: wonScopas,
+          setebellos: setebellos,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async post() {
+      try {
+        await axios.post("/api/playerStats/", {
+          gamesLost: 0,
+          gamesWon: 0,
+          wonScopas: 0,
+          setebellos: 0,
+        });
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
 };
@@ -367,5 +554,9 @@ img {
 }
 .cardCount {
   color: #f4edea;
+}
+
+#table {
+  height: 300%;
 }
 </style>

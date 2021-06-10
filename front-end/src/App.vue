@@ -79,4 +79,8 @@
   flex-direction: row;
   justify-content: space-evenly;
 }
+
+p {
+  size: 2em;
+}
 </style>

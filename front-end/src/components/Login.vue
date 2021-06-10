@@ -94,7 +94,6 @@ export default {
           username: this.usernameLogin,
           password: this.passwordLogin,
         });
-        console.log(response.data.user);
         this.$root.$data.user = response.data.user;
       } catch (error) {
         this.errorLogin = "Error: " + error.response.data.message;
