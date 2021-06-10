@@ -2,8 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const argon2 = require("argon2");
 
-const gameStatsSchema = require("./gameStats.js");
-const gameStats = gameStatsSchema.model;
+// const playerStatsSchema = require("./playerStats.js");
+// const playerStats = playerStatsSchema.model;
 
 const router = express.Router();
 
@@ -14,15 +14,20 @@ const router = express.Router();
 // This is the schema. Users have usernames and passwords. We solemnly promise to
 // salt and hash the password!
 const userSchema = new mongoose.Schema({
-    gameStats: {
-        type: mongoose.Schema.ObjectId,
-        ref: "gameStats",
-    },
     firstName: String,
     lastName: String,
     username: String,
     password: String,
     profilePath: String,
+});
+
+// Configure multer so that it will upload to '/public/images'
+const multer = require("multer");
+const upload = multer({
+    dest: "../front-end/public/images/",
+    limits: {
+        fileSize: 50000000,
+    },
 });
 
 // This is a hook that will be called before a user record is saved,
@@ -128,15 +133,7 @@ router.post("/", async(req, res) => {
                 message: "username already exists",
             });
         // create a new user and save it to the database
-        const stats = new gameStats({
-            gamesWon: 0,
-            gamesLost: 0,
-            wonScopas: 0,
-            setebellos: 0,
-        });
-
         const user = new User({
-            gameStats: stats,
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             username: req.body.username,
@@ -144,6 +141,7 @@ router.post("/", async(req, res) => {
             profilePath: "",
         });
         await user.save();
+
         // set user session info
         req.session.userID = user._id;
 
@@ -193,6 +191,31 @@ router.post("/login", async(req, res) => {
     }
 });
 
+// upload profile picture
+router.post(
+    "/profilePic",
+    validUser,
+    upload.single("photo"),
+    async(req, res) => {
+        // check parameters
+        if (!req.file)
+            return res.status(400).send({
+                message: "Must upload a file.",
+            });
+        user = req.user;
+
+        user.profilePath = "/images/" + req.file.filename;
+        await user.save();
+
+        try {
+            res.send({ path: user.profilePath });
+        } catch (error) {
+            console.log(error);
+            return res.sendStatus(500);
+        }
+    }
+);
+
 // get logged in user
 router.get("/", validUser, async(req, res) => {
     try {
@@ -209,6 +232,19 @@ router.get("/", validUser, async(req, res) => {
 router.delete("/", validUser, async(req, res) => {
     try {
         req.session = null;
+        res.sendStatus(200);
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(500);
+    }
+});
+
+// logout
+router.delete("/profilePic", validUser, async(req, res) => {
+    try {
+        user = req.user;
+        user.profilePath = "";
+        await user.save();
         res.sendStatus(200);
     } catch (error) {
         console.log(error);

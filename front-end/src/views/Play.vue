@@ -8,20 +8,15 @@
       >
         Click to play!
       </button>
-      <button
-        type="submit"
-        class="pure-button pure-button-primary"
-        @click.prevent="post"
-      >
-        Click to post!
-      </button>
     </div>
-    <div id="results" v-if="!gameInSession && finishedGame">
+    <div id="results" v-if="finishedGame">
       <p>Opponent's points:</p>
+      <p v-if="cpuAwards.length == 0">None :/</p>
       <div v-for="award in cpuAwards" v-bind:key="award._id">
         <p>{{ award }}</p>
       </div>
       <p>Your points:</p>
+      <p v-if="playerAwards.length == 0">None :/</p>
       <div v-for="award in playerAwards" v-bind:key="award._id">
         <p>{{ award }}</p>
       </div>
@@ -225,7 +220,6 @@ export default {
         this.playerActiveCards.length == 0
       ) {
         this.finishedGame = true;
-        this.gameInSession = false;
         this.endGame();
       }
       this.playerTurn = true;

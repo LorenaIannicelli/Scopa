@@ -1,6 +1,10 @@
 <template>
   <div>
     <p>Ciao {{ user.firstName }} {{ user.lastName }}</p>
+    <h2>
+      {{ user.firstName }} {{ user.lastName }}
+      <a @click="logout"><i class="fas fa-sign-out-alt"></i></a>
+    </h2>
     <div id="profileInfo">
       <img
         id="profilePic"
@@ -24,10 +28,13 @@
     >
       Remove Profile Picture
     </button>
+
     <div id="stats">
-      <p>Games won: {{ playerStats.gamesWon }}</p>
-      <p>Games lost: {{ playerStats.gamesLost }}</p>
+      <p>Games won: {{ playerStats[0].gamesWon }}</p>
+      <p>Games lost: {{ playerStats[0].gamesLost }}</p>
       <p>Games played: {{ gamesPlayed }}</p>
+      <p>Scopas won: {{ playerStats[0].wonScopas }}</p>
+      <p>Setebellos captured: {{ playerStats[0].setebellos }}</p>
     </div>
   </div>
 </template>
@@ -40,18 +47,12 @@ export default {
   components: {
     Upload,
   },
-  async created() {
-    try {
-      let response = await axios.get("/api/playerStats");
-      this.playerStats = response.body.playerStats;
-    } catch (error) {
-      this.$root.$data.user = null;
-    }
+  props: {
+    playerStats: Object,
   },
   data() {
     return {
       show: false,
-      playerStats: Object,
     };
   },
   computed: {
@@ -59,7 +60,7 @@ export default {
       return this.$root.$data.user;
     },
     gamesPlayed() {
-      return this.playerStats.gamesWon + this.playerStats.gamesLost;
+      return this.playerStats[0].gamesWon + this.playerStats[0].gamesLost;
     },
   },
   methods: {
@@ -78,6 +79,14 @@ export default {
         this.$root.user.profilePath = "";
       } catch (error) {
         console.log(error);
+      }
+    },
+    async logout() {
+      try {
+        await axios.delete("/api/users");
+        this.$root.$data.user = null;
+      } catch (error) {
+        this.$root.$data.user = null;
       }
     },
   },

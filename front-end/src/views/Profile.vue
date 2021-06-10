@@ -1,6 +1,6 @@
 <template>
   <div class="profile">
-    <UserProfile v-if="user" />
+    <UserProfile :playerStats="player_stats" v-if="user" />
     <Login v-else />
   </div>
 </template>
@@ -11,6 +11,11 @@ import UserProfile from "@/components/UserProfile.vue";
 import axios from "axios";
 export default {
   name: "profile",
+  data() {
+    return {
+      player_stats: Object,
+    };
+  },
   components: {
     UserProfile,
     Login,
@@ -20,6 +25,8 @@ export default {
     try {
       let response = await axios.get("/api/users");
       this.$root.$data.user = response.data.user;
+      let sResponse = await axios.get("/api/playerStats");
+      this.player_stats = sResponse.data.playerStats;
     } catch (error) {
       this.$root.$data.user = null;
     }
