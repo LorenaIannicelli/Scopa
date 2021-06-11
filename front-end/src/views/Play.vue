@@ -21,29 +21,27 @@
         <p>{{ award }}</p>
       </div>
       <p>{{ winMessage }}</p>
-      <button
-        type="submit"
-        class="pure-button pure-button-primary"
-        @click.prevent="startGame"
-      >
-        Click to play again!
-      </button>
     </div>
-    <div v-else>
+    <div v-if="gameInSession">
       <div>
         <p v-if="playerTurn">It's your turn!</p>
         <p v-else>It's your opponent's turn!</p>
       </div>
-      <div id="opponentCards">
-        <div v-for="card in cpuActiveCards" v-bind:key="card._id">
-          <!-- <img src="/images/backOfCard.jpg" /> -->
-          <img :src="card.Path" />
-        </div>
-        <div v-if="cpuWonCards.length > 0">
-          <img src="/images/backOfCard.jpg" />
-          <p class="cardCount">{{ cpuWonCards.length }}</p>
+      <div id="redBar">
+        <p>Opponent's Hand:</p>
+        <div id="opponentCards">
+          <div v-for="card in cpuActiveCards" v-bind:key="card._id">
+            <!-- <img src="/images/backOfCard.jpg" /> -->
+            <img :src="card.Path" />
+          </div>
+          <img
+            class="wonCards"
+            v-if="cpuWonCards.length != 0"
+            src="/images/backOfCard.jpg"
+          />
         </div>
       </div>
+
       <div id="tableCards">
         <div v-if="tableCards.length == 0">
           <p id="table">!!Scopa!!</p>
@@ -52,13 +50,18 @@
           <img :src="card.Path" />
         </div>
       </div>
-      <div id="playerCards">
-        <div v-for="card in playerActiveCards" v-bind:key="card._id">
-          <img :src="card.Path" v-on:click="imageClicked(card)" />
-        </div>
-        <div v-if="playerWonCards.length > 0">
-          <img src="/images/backOfCard.jpg" />
-          <p class="cardCount">{{ playerWonCards.length }}</p>
+
+      <div id="greenBar">
+        <p>Your Hand:</p>
+        <div id="playerCards">
+          <div v-for="card in playerActiveCards" v-bind:key="card._id">
+            <img :src="card.Path" v-on:click="imageClicked(card)" />
+          </div>
+          <img
+            class="wonCards"
+            v-if="playerWonCards.length != 0"
+            src="/images/backOfCard.jpg"
+          />
         </div>
       </div>
     </div>
@@ -97,6 +100,7 @@ export default {
   },
   async created() {
     this.gameInSession = false;
+    this.finishedGame = false;
     try {
       let response = await axios.get("/api/users");
       this.$root.$data.user = response.data.user;
@@ -515,12 +519,32 @@ export default {
 </script>
 
 <style scoped>
+button {
+  margin-top: 1em;
+}
+#redBar {
+  background-color: #bf211e;
+}
+
+#redBar p {
+  padding-top: 1em;
+}
+
+#greenBar {
+  background-color: #134611;
+  color: #f4edea;
+}
+#greenBar p {
+  padding-top: 1em;
+}
+
 #opponentCards {
   display: flex;
   flex-direction: row;
   justify-content: center;
   background-color: #bf211e;
   height: 30%;
+  align-items: center;
 }
 
 #tableCards {
@@ -529,23 +553,33 @@ export default {
   justify-content: center;
   background-color: #f4edea;
   height: 30%;
+  align-items: center;
 }
 
 #playerCards {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  background-color: #134611;
   height: 30%;
+  align-items: center;
 }
 
 img {
-  width: 20%;
+  width: 8em;
+  margin-left: 1em;
+  margin-top: 0.5em;
+  margin-bottom: 2em;
+}
+
+.wonCards {
+  margin-left: 10em;
+  border: black;
 }
 
 #clickToPlay {
   height: 50em;
 }
+
 .cardCount {
   color: #f4edea;
 }

@@ -134,9 +134,14 @@
         </li>
       </ul>
     </div>
-    <div id="play">
-      <p>Click here to play!</p>
-    </div>
+    <button
+      id="play"
+      type="submit"
+      class="pure-button pure-button-primary"
+      @click.prevent="play"
+    >
+      Click to play!
+    </button>
   </div>
 </template>
 
@@ -147,6 +152,12 @@ export default {
   computed: {
     user() {
       return this.$root.$data.user;
+    },
+  },
+
+  methods: {
+    play() {
+      this.$router.push("/play");
     },
   },
 };
@@ -203,5 +214,9 @@ export default {
   margin-right: 1em;
   margin-top: 1em;
   margin-bottom: 1em;
+}
+
+button {
+  margin-top: 1em;
 }
 </style>

@@ -29,7 +29,7 @@
       Remove Profile Picture
     </button>
 
-    <div id="stats">
+    <div id="stats" v-if="playerStats">
       <p>Games won: {{ playerStats[0].gamesWon }}</p>
       <p>Games lost: {{ playerStats[0].gamesLost }}</p>
       <p>Games played: {{ gamesPlayed }}</p>
