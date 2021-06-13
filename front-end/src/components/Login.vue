@@ -38,7 +38,7 @@
           <button
             type="submit"
             class="pure-button pure-button-primary"
-            @click.prevent="register"
+            @click.prevent="registerAndCreateStats"
           >
             Sign Up!
           </button>
@@ -65,6 +65,14 @@ export default {
     };
   },
   methods: {
+    async registerAndCreateStats() {
+      await this.register();
+      await this.createStats();
+    },
+
+    async createStats() {
+      await axios.post("/api/playerStats");
+    },
     async register() {
       this.error = "";
       this.errorLogin = "";

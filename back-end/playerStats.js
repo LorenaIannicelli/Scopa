@@ -28,6 +28,25 @@ const playerStats = mongoose.model("playerStats", playerStatSchema);
 
 //update stats
 router.post("/", validUser, async(req, res) => {
+    console.log("in post");
+    try {
+        stats = new playerStats({
+            user: req.user,
+            gamesWon: 0,
+            gamesLost: 0,
+            wonScopas: 0,
+            setebellos: 0,
+        });
+        console.log(stats.gamesWon);
+        await stats.save();
+        return res.sendStatus(200);
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(500);
+    }
+});
+
+router.put("/", validUser, async(req, res) => {
     try {
         let stats = await playerStats
             .findOne({
@@ -42,17 +61,8 @@ router.post("/", validUser, async(req, res) => {
             await stats.save();
             return res.sendStatus(200);
         } else {
-            stats = new playerStats({
-                user: req.user,
-                gamesWon: req.body.gamesWon,
-                gamesLost: req.body.gamesLost,
-                wonScopas: req.body.wonScopas,
-                setebellos: req.body.setebellos,
-            });
-            await stats.save();
-            return res.sendStatus(200);
+            res.sendStatus(500);
         }
-        return res.sendStatus(500);
     } catch (error) {
         console.log(error);
         return res.sendStatus(500);
@@ -62,7 +72,7 @@ router.post("/", validUser, async(req, res) => {
 router.get("/", validUser, async(req, res) => {
     try {
         let stats = await playerStats
-            .find({
+            .findOne({
                 user: req.user,
             })
             .populate("user");

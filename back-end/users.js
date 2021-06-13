@@ -239,7 +239,7 @@ router.delete("/", validUser, async(req, res) => {
     }
 });
 
-// logout
+//
 router.delete("/profilePic", validUser, async(req, res) => {
     try {
         user = req.user;
