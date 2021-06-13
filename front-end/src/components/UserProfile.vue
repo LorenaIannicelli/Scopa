@@ -30,11 +30,14 @@
     </button>
 
     <div id="stats" v-if="playerStats">
-      <p>Games won: {{ playerStats[0].gamesWon }}</p>
-      <p>Games lost: {{ playerStats[0].gamesLost }}</p>
+      <p>Games won: {{ playerStats.gamesWon }}</p>
+      <p>Games lost: {{ playerStats.gamesLost }}</p>
       <p>Games played: {{ gamesPlayed }}</p>
-      <p>Scopas won: {{ playerStats[0].wonScopas }}</p>
-      <p>Setebellos captured: {{ playerStats[0].setebellos }}</p>
+      <p>Scopas won: {{ playerStats.wonScopas }}</p>
+      <p>Setebellos captured: {{ playerStats.setebellos }}</p>
+    </div>
+    <div v-else>
+      <p>Play some games to show your stats!</p>
     </div>
   </div>
 </template>
@@ -47,12 +50,17 @@ export default {
   components: {
     Upload,
   },
-  props: {
-    playerStats: Object,
+  async created() {
+    console.log("created");
+    let response = await axios.get("/api/playerStats/");
+    console.log(response);
+    this.playerStats = response.data.playerStats;
   },
+
   data() {
     return {
       show: false,
+      playerStats: {},
     };
   },
   computed: {
@@ -60,7 +68,7 @@ export default {
       return this.$root.$data.user;
     },
     gamesPlayed() {
-      return this.playerStats[0].gamesWon + this.playerStats[0].gamesLost;
+      return this.playerStats.gamesWon + this.playerStats.gamesLost;
     },
   },
   methods: {

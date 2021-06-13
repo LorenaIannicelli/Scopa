@@ -9,7 +9,7 @@
         Click to play!
       </button>
     </div>
-    <div id="results" v-if="finishedGame">
+    <div id="results" v-elseif="finishedGame">
       <p>Opponent's points:</p>
       <p v-if="cpuAwards.length == 0">None :/</p>
       <div v-for="award in cpuAwards" v-bind:key="award._id">
@@ -22,7 +22,7 @@
       </div>
       <p>{{ winMessage }}</p>
     </div>
-    <div v-if="gameInSession">
+    <div v-elseif="gameInSession">
       <div>
         <p v-if="playerTurn">It's your turn!</p>
         <p v-else>It's your opponent's turn!</p>
@@ -492,7 +492,7 @@ export default {
         setebellos = 1;
       }
       try {
-        await axios.post("/api/playerStats/", {
+        await axios.put("/api/playerStats/", {
           gamesLost: gamesLost,
           gamesWon: gamesWon,
           wonScopas: wonScopas,
