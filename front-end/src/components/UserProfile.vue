@@ -1,6 +1,5 @@
 <template>
   <div>
-    <p>Ciao {{ user.firstName }} {{ user.lastName }}</p>
     <h2>
       {{ user.firstName }} {{ user.lastName }}
       <a @click="logout"><i class="fas fa-sign-out-alt"></i></a>

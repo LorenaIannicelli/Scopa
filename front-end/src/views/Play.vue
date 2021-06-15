@@ -9,23 +9,27 @@
         Click to play!
       </button>
     </div>
-    <div id="results" v-elseif="finishedGame">
-      <p>Opponent's points:</p>
+    <div id="results" v-else-if="finishedGame">
+      <p class="pointHeader"><u>Opponent's points:</u></p>
       <p v-if="cpuAwards.length == 0">None :/</p>
       <div v-for="award in cpuAwards" v-bind:key="award._id">
         <p>{{ award }}</p>
       </div>
-      <p>Your points:</p>
+
+      <p class="pointHeader"><u>Your points:</u></p>
       <p v-if="playerAwards.length == 0">None :/</p>
+
       <div v-for="award in playerAwards" v-bind:key="award._id">
         <p>{{ award }}</p>
       </div>
-      <p>{{ winMessage }}</p>
+
+      <p id="winMesesage">{{ winMessage }}</p>
     </div>
-    <div v-elseif="gameInSession">
+
+    <div v-else-if="gameInSession">
       <div>
-        <p v-if="playerTurn">It's your turn!</p>
-        <p v-else>It's your opponent's turn!</p>
+        <p class="turn" v-if="playerTurn">It's your turn!</p>
+        <p class="turn" v-else>It's your opponent's turn!</p>
       </div>
       <div id="redBar">
         <p>Opponent's Hand:</p>
@@ -41,7 +45,6 @@
           />
         </div>
       </div>
-
       <div id="tableCards">
         <div v-if="tableCards.length == 0">
           <p id="table">!!Scopa!!</p>
@@ -50,7 +53,6 @@
           <img :src="card.Path" />
         </div>
       </div>
-
       <div id="greenBar">
         <p>Your Hand:</p>
         <div id="playerCards">
@@ -66,6 +68,7 @@
       </div>
     </div>
   </div>
+
   <Login v-else />
 </template>
 
@@ -416,11 +419,11 @@ export default {
 
       //assign scopa points
       if (this.playerPoints > 0) {
-        this.playerAwards.push("Scopa X" + this.playerPoints);
+        this.playerAwards.push("Scopa x" + this.playerPoints);
       }
 
       if (this.cpuPoints > 0) {
-        this.cpuAwards.push("Scopa X" + this.cpuPoints);
+        this.cpuAwards.push("Scopa x" + this.cpuPoints);
       }
 
       //figure out how many of each points cpu had
@@ -479,8 +482,8 @@ export default {
     async endGame() {
       let gamesLost = 0;
       let gamesWon = 0;
-      let wonScopas = 0;
-      let setebellos = this.playerPoints;
+      let wonScopas = this.playerPoints;
+      let setebellos = 0;
       this.calculateScore();
       //calculate point values
       if (this.playerWon) {
@@ -502,18 +505,6 @@ export default {
         console.log(error);
       }
     },
-    async post() {
-      try {
-        await axios.post("/api/playerStats/", {
-          gamesLost: 0,
-          gamesWon: 0,
-          wonScopas: 0,
-          setebellos: 0,
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    },
   },
 };
 </script>
@@ -524,6 +515,7 @@ button {
 }
 #redBar {
   background-color: #bf211e;
+  color: #f4edea;
 }
 
 #redBar p {
@@ -536,6 +528,7 @@ button {
 }
 #greenBar p {
   padding-top: 1em;
+  margin-top: 0em;
 }
 
 #opponentCards {
@@ -543,7 +536,7 @@ button {
   flex-direction: row;
   justify-content: center;
   background-color: #bf211e;
-  height: 30%;
+  height: 27%;
   align-items: center;
 }
 
@@ -552,7 +545,7 @@ button {
   flex-direction: row;
   justify-content: center;
   background-color: #f4edea;
-  height: 30%;
+  height: 27%;
   align-items: center;
 }
 
@@ -560,15 +553,8 @@ button {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  height: 30%;
+  height: 27%;
   align-items: center;
-}
-
-img {
-  width: 8em;
-  margin-left: 1em;
-  margin-top: 0.5em;
-  margin-bottom: 2em;
 }
 
 .wonCards {
@@ -586,5 +572,55 @@ img {
 
 #table {
   height: 300%;
+  font-size: 1.4em;
+}
+
+.turn {
+  font-size: 1.4em;
+}
+
+#winMesesage {
+  font-size: 1.2em;
+}
+
+.pointHeader {
+  font-size: 1.1em;
+}
+
+img {
+  width: 8em;
+  margin-left: 1em;
+  margin-top: 0.5em;
+  margin-bottom: 2em;
+}
+
+/* Masonry on large screens */
+@media only screen and (min-width: 1024px) {
+  img {
+    width: 4em;
+    margin-left: 0.5em;
+    margin-top: 0.25em;
+    margin-bottom: 1em;
+  }
+}
+
+/* Masonry on medium-sized screens */
+@media only screen and (max-width: 1023px) and (min-width: 768px) {
+  img {
+    width: 4em;
+    margin-left: 0.5em;
+    margin-top: 0.25em;
+    margin-bottom: 1em;
+  }
+}
+
+/* Masonry on small screens */
+@media only screen and (max-width: 767px) and (min-width: 540px) {
+  img {
+    width: 2em;
+    margin-left: 0.25em;
+    margin-top: 0.125em;
+    margin-bottom: 0.5em;
+  }
 }
 </style>
