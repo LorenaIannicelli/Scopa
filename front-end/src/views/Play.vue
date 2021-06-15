@@ -1,6 +1,6 @@
 <template>
   <div class="play" v-if="user">
-    <div id="clickToPlay" v-if="!gameInSession">
+    <div class="clickToPlay" v-if="!gameInSession">
       <button
         type="submit"
         class="pure-button pure-button-primary"
@@ -15,6 +15,7 @@
       <div v-for="award in cpuAwards" v-bind:key="award._id">
         <p>{{ award }}</p>
       </div>
+      <p>Total: {{ this.cpuPoints }}</p>
 
       <p class="pointHeader"><u>Your points:</u></p>
       <p v-if="playerAwards.length == 0">None :/</p>
@@ -22,8 +23,18 @@
       <div v-for="award in playerAwards" v-bind:key="award._id">
         <p>{{ award }}</p>
       </div>
+      <p>Total: {{ this.playerPoints }}</p>
 
       <p id="winMesesage">{{ winMessage }}</p>
+      <div class="clickToPlay">
+        <button
+          type="submit"
+          class="pure-button pure-button-primary"
+          @click.prevent="startGame"
+        >
+          Click to play again!
+        </button>
+      </div>
     </div>
 
     <div v-else-if="gameInSession">
@@ -99,6 +110,7 @@ export default {
       playerAwards: [],
       winMessage: String,
       playerWon: Boolean,
+      playerHadSetebello: Boolean,
     };
   },
   async created() {
@@ -207,7 +219,7 @@ export default {
         this.playedCard = card;
         this.determinePoints();
         this.playerTurn = false;
-        await setTimeout(this.executeCPUMove, 5000);
+        await setTimeout(this.executeCPUMove, 3000);
       }
     },
 
@@ -399,7 +411,7 @@ export default {
       let cpuSevens = 0;
       let playerDenari = 0;
       let cpuDenari = 0;
-      let playerHadSetebello = false;
+      this.playerHadSetebello = false;
 
       //figure out how many of each points player had
       for (let i = 0; i < this.playerWonCards.length; i++) {
@@ -413,7 +425,7 @@ export default {
           this.playerWonCards[i].Value == 7 &&
           this.playerWonCards[i].Suit == "coins"
         ) {
-          playerHadSetebello = true;
+          this.playerHadSetebello = true;
         }
       }
 
@@ -463,7 +475,7 @@ export default {
         this.cpuAwards.push("Denari (most coins)");
       }
 
-      if (playerHadSetebello) {
+      if (this.playerHadSetebello) {
         this.incrementPlayerPoints();
         this.playerAwards.push("Setebello");
       } else {
@@ -536,7 +548,7 @@ button {
   flex-direction: row;
   justify-content: center;
   background-color: #bf211e;
-  height: 27%;
+  height: 30%;
   align-items: center;
 }
 
@@ -545,7 +557,7 @@ button {
   flex-direction: row;
   justify-content: center;
   background-color: #f4edea;
-  height: 27%;
+  height: 30%;
   align-items: center;
 }
 
@@ -553,7 +565,7 @@ button {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  height: 27%;
+  height: 30%;
   align-items: center;
 }
 
@@ -562,7 +574,7 @@ button {
   border: black;
 }
 
-#clickToPlay {
+.clickToPlay {
   height: 50em;
 }
 
@@ -588,13 +600,13 @@ button {
 }
 
 img {
-  width: 8em;
+  width: 7em;
   margin-left: 1em;
   margin-top: 0.5em;
   margin-bottom: 2em;
 }
 
-/* Masonry on large screens */
+/* Masonry on large screens
 @media only screen and (min-width: 1024px) {
   img {
     width: 4em;
@@ -602,7 +614,7 @@ img {
     margin-top: 0.25em;
     margin-bottom: 1em;
   }
-}
+} */
 
 /* Masonry on medium-sized screens */
 @media only screen and (max-width: 1023px) and (min-width: 768px) {
