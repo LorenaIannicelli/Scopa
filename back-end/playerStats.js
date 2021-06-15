@@ -28,7 +28,6 @@ const playerStats = mongoose.model("playerStats", playerStatSchema);
 
 //update stats
 router.post("/", validUser, async(req, res) => {
-    console.log("in post");
     try {
         stats = new playerStats({
             user: req.user,
@@ -37,7 +36,6 @@ router.post("/", validUser, async(req, res) => {
             wonScopas: 0,
             setebellos: 0,
         });
-        console.log(stats.gamesWon);
         await stats.save();
         return res.sendStatus(200);
     } catch (error) {
@@ -76,7 +74,6 @@ router.get("/", validUser, async(req, res) => {
                 user: req.user,
             })
             .populate("user");
-        console.log(stats);
         return res.send({
             playerStats: stats,
         });
