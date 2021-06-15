@@ -65,20 +65,24 @@ export default {
     };
   },
   methods: {
+    //when a new person registers, they need zeroed out stats
     async registerAndCreateStats() {
       await this.register();
       await this.createStats();
     },
-
+    //call post to create stats
     async createStats() {
       await axios.post("/api/playerStats");
     },
+    //register new person
     async register() {
       this.error = "";
       this.errorLogin = "";
+      //if any fields are blank, don't do anything
       if (!this.firstName || !this.lastName || !this.username || !this.password)
         return;
       try {
+        //try and post a new user, with no profile path (default pic will be used )
         let response = await axios.post("/api/users", {
           firstName: this.firstName,
           lastName: this.lastName,
@@ -92,10 +96,11 @@ export default {
         this.$root.$data.user = null;
       }
     },
-
+    //log user in
     async login() {
       this.error = "";
       this.errorLogin = "";
+      //if anything is empty, return
       if (!this.usernameLogin || !this.passwordLogin) return;
       try {
         let response = await axios.post("/api/users/login", {
@@ -120,11 +125,6 @@ button {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-}
-.login {
-}
-
-.signUp {
 }
 
 #loginInfo {

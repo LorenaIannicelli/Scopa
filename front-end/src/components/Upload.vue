@@ -1,4 +1,5 @@
 <template>
+  <!-- use transition to keep showing background -->
   <transition v-if="show" name="modal">
     <div class="modal-mask">
       <div class="modal-container">
@@ -46,6 +47,7 @@ export default {
     };
   },
   methods: {
+    //if file isi changed, update
     fileChanged(event) {
       this.file = event.target.files[0];
       this.url = URL.createObjectURL(this.file);
@@ -53,9 +55,11 @@ export default {
     close() {
       this.$emit("close");
     },
+    //react when image is picked
     chooseImage() {
       this.$refs.fileInput.click();
     },
+    //upload to database
     async upload() {
       try {
         const formData = new FormData();
@@ -103,14 +107,6 @@ export default {
   transition: all 0.5s ease;
 }
 
-/*
-* The following styles are auto-applied to elements with
-* transition="modal" when their visibility is toggled
-* by Vue.js.
-*
-* You can easily play with the modal transition by editing
-* these styles.
-*/
 .modal-enter {
   opacity: 0;
 }
@@ -124,8 +120,6 @@ export default {
   -webkit-transform: scale(1.1);
   transform: scale(1.1);
 }
-
-/* Form */
 
 form {
   font-size: 11pt;
@@ -162,5 +156,9 @@ img {
 .buttons {
   display: flex;
   justify-content: space-between;
+}
+
+.imageInput {
+  text-align: center;
 }
 </style>

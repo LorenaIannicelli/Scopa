@@ -49,10 +49,9 @@ export default {
   components: {
     Upload,
   },
+  //get player stats on creation
   async created() {
-    console.log("created");
     let response = await axios.get("/api/playerStats/");
-    console.log(response);
     this.playerStats = response.data.playerStats;
   },
 
@@ -80,6 +79,7 @@ export default {
     close() {
       this.show = false;
     },
+    //delete profile picture
     async deleteProfileImg() {
       try {
         await axios.delete("/api/users/profilePic");
@@ -88,6 +88,7 @@ export default {
         console.log(error);
       }
     },
+    //logout of account
     async logout() {
       try {
         await axios.delete("/api/users");

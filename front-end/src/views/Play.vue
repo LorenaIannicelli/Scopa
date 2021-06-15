@@ -130,6 +130,7 @@ export default {
     },
   },
   methods: {
+    //start the game when button is pressed
     startGame() {
       this.gameInSession = true;
       this.finishedGame = false;
@@ -141,10 +142,12 @@ export default {
       this.shuffle();
       this.initialDeal();
     },
+    //return everyone's points to zero
     initializePoints() {
       this.cpuPoints = 0;
       this.playerPoints = 0;
     },
+    //make the deck of cards
     getDeck() {
       var suits = ["cups", "swords", "clubs", "coins"];
       var values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -167,7 +170,7 @@ export default {
       }
       this.deck = deck;
     },
-
+    //shuffle the deck
     shuffle() {
       // for 1000 turns
       // switch the values of two random cards
@@ -180,7 +183,7 @@ export default {
         this.deck[location2] = tmp;
       }
     },
-
+    //deal the players and the table
     initialDeal() {
       //deal the players
       for (let i = 0; i < 3; i++) {
@@ -196,6 +199,7 @@ export default {
       }
     },
 
+    //deal just the players
     deal() {
       //deal the players
       for (let i = 0; i < 3; i++) {
@@ -206,11 +210,14 @@ export default {
       }
     },
 
+    //player took their turn
     imageClicked(card) {
       this.play(card);
     },
 
+    //take a turn
     async play(card) {
+      //make sure there are still cards to be played
       if (
         this.playerActiveCards.length > 0 &&
         this.cpuActiveCards.length > 0 &&
@@ -223,17 +230,20 @@ export default {
       }
     },
 
+    //have the cpu play a card. Redeal the table when necessary
     executeCPUMove() {
-      let cpuIndex = this.determineCPUMove();
+      let cpuIndex = this.determineCPUMove(); //cpu move
       this.playedCard = this.cpuActiveCards[cpuIndex];
-      this.determinePoints();
+      this.determinePoints(); //cpu plays
+      //if there are no more cards on table, deal
       if (
         this.cpuActiveCards.length == 0 &&
         this.playerActiveCards.length == 0 &&
         this.deck.length > 0
       ) {
         this.deal();
-      } else if (
+      } //if there are no cards left, end the game
+      else if (
         this.deck.length == 0 &&
         this.cpuActiveCards.length == 0 &&
         this.playerActiveCards.length == 0
@@ -270,8 +280,9 @@ export default {
       //there were no good moves
       return 0;
     },
+    //determine the points and won cards from last played card.
     determinePoints() {
-      //first, find index in hand
+      //first, find index in current player's hand
       let index = -1;
       if (this.playerTurn) {
         for (let i = 0; i < this.playerActiveCards.length; i++) {
@@ -374,21 +385,22 @@ export default {
       this.playedCard = null;
       return;
     },
+    //check if there was a scopa
     checkForScopa(emptyTable) {
       if (this.tableCards.length == emptyTable) return true;
       return false;
     },
-
+    //increment player points
     incrementPlayerPoints() {
       this.playerPoints += 1;
     },
-
+    //add to cpu points
     incrementCPUPoints() {
       this.cpuPoints += 1;
     },
-
+    //end of game, determine who got what points
     calculateScore() {
-      //if cards are still on the table
+      //give remaining cards to last player to pick up (if applicable)
       if (this.tableCards.length > 0) {
         let numCards = this.tableCards.length;
         //user picked up cards last, they get the rest
@@ -413,6 +425,15 @@ export default {
       let cpuDenari = 0;
       this.playerHadSetebello = false;
 
+      //assign scopa points
+      if (this.playerPoints > 0) {
+        this.playerAwards.push("Scopa x" + this.playerPoints);
+      }
+
+      if (this.cpuPoints > 0) {
+        this.cpuAwards.push("Scopa x" + this.cpuPoints);
+      }
+
       //figure out how many of each points player had
       for (let i = 0; i < this.playerWonCards.length; i++) {
         if (this.playerWonCards[i].Suit == "coins") {
@@ -427,15 +448,6 @@ export default {
         ) {
           this.playerHadSetebello = true;
         }
-      }
-
-      //assign scopa points
-      if (this.playerPoints > 0) {
-        this.playerAwards.push("Scopa x" + this.playerPoints);
-      }
-
-      if (this.cpuPoints > 0) {
-        this.cpuAwards.push("Scopa x" + this.cpuPoints);
       }
 
       //figure out how many of each points cpu had
@@ -475,6 +487,7 @@ export default {
         this.cpuAwards.push("Denari (most coins)");
       }
 
+      //determine who had setebello
       if (this.playerHadSetebello) {
         this.incrementPlayerPoints();
         this.playerAwards.push("Setebello");
@@ -482,6 +495,7 @@ export default {
         this.incrementCPUPoints();
         this.cpuAwards.push("Setebello");
       }
+      //determine who won
       if (this.playerPoints > this.cpuPoints) {
         this.winMessage = "You won!";
         this.playerWon = true;
@@ -491,6 +505,8 @@ export default {
         this.winMessage = "tie!";
       }
     },
+
+    //end the game, calculate points and update database
     async endGame() {
       let gamesLost = 0;
       let gamesWon = 0;
@@ -605,16 +621,6 @@ img {
   margin-top: 0.5em;
   margin-bottom: 2em;
 }
-
-/* Masonry on large screens
-@media only screen and (min-width: 1024px) {
-  img {
-    width: 4em;
-    margin-left: 0.5em;
-    margin-top: 0.25em;
-    margin-bottom: 1em;
-  }
-} */
 
 /* Masonry on medium-sized screens */
 @media only screen and (max-width: 1023px) and (min-width: 768px) {
