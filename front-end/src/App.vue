@@ -3,7 +3,7 @@
     <div id="nav">
       <router-link to="/play">
         <div id="gameLink">
-          <img id="italyPic" src="/images/italy.png" />
+          <img id="italyPic" src="/images/italy.PNG" />
         </div>
       </router-link>
 
@@ -23,7 +23,7 @@
 
     <hr />
     <div id="footer">
-      <p>I spent __ hours on this website</p>
+      <p>I spent 25 hours on this website</p>
       <p><a href="https://github.com/LorenaIannicelli/Scopa"> Github! </a></p>
       <p>Lorena Iannicelli, computer engineering</p>
     </div>
