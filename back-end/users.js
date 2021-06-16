@@ -192,7 +192,7 @@ router.post("/login", async(req, res) => {
 });
 
 // upload profile picture
-router.post(
+router.put(
     "/profilePic",
     validUser,
     upload.single("photo"),

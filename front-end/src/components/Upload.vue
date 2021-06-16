@@ -64,7 +64,7 @@ export default {
       try {
         const formData = new FormData();
         formData.append("photo", this.file, this.file.name);
-        let response = await axios.post("/api/users/profilePic", formData);
+        let response = await axios.put("/api/users/profilePic", formData);
         this.$root.user.profilePath = response.data.path;
         this.file = null;
         this.url = "";
