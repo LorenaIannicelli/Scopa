@@ -22,6 +22,7 @@
           </button>
         </fieldset>
       </form>
+      <p v-if="errorLogin" class="error">{{ errorLogin }}</p>
     </div>
     <div class="signUp">
       <p>Sign-up</p>
@@ -44,6 +45,7 @@
           </button>
         </fieldset>
       </form>
+      <p v-if="error" class="error">{{ error }}</p>
     </div>
   </div>
 </template>
@@ -139,5 +141,14 @@ button {
 
 #fnSU {
   margin-right: 1em;
+}
+
+.error {
+  display: inline;
+  padding: 5px 20px;
+  border-radius: 30px;
+  font-size: 0.75em;
+  background-color: #134611;
+  color: #fff;
 }
 </style>
