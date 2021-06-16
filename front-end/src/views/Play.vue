@@ -87,7 +87,9 @@
 
     <div v-else-if="gameInSession">
       <div>
-        <p class="turn" v-if="playerTurn">It's your turn!</p>
+        <p class="turn" v-if="playerTurn">
+          It's your turn! Click on a card in your hand to play!
+        </p>
         <p class="turn" v-else>It's your opponent's turn!</p>
       </div>
       <div id="redBar">
@@ -630,6 +632,15 @@ button {
   justify-content: center;
   height: 30%;
   align-items: center;
+}
+
+#howToPlay {
+  width: 70%;
+  justify-self: center;
+  border: solid;
+  text-align: left;
+  padding-left: 1em;
+  padding-right: 1em;
 }
 
 .wonCards {
