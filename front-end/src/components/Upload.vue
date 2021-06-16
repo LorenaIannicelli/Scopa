@@ -22,7 +22,11 @@
             <button type="button" @click="close" class="pure-button">
               Close
             </button>
-            <button type="submit" class="pure-button pure-button-primary right">
+            <button
+              id="redButton"
+              type="submit"
+              class="pure-button pure-button-primary right"
+            >
               Upload
             </button>
           </fieldset>
@@ -160,5 +164,9 @@ img {
 
 .imageInput {
   text-align: center;
+}
+
+#redButton {
+  background-color: #bf211e;
 }
 </style>

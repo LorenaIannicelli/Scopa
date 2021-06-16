@@ -589,6 +589,7 @@ export default {
 <style scoped>
 button {
   margin-top: 1em;
+  background-color: #bf211e;
 }
 #redBar {
   background-color: #bf211e;
@@ -651,7 +652,7 @@ button {
 }
 
 .clickToPlay {
-  height: 50em;
+  margin-bottom: 3em;
 }
 
 .cardCount {

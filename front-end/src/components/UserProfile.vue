@@ -105,6 +105,7 @@ export default {
 button {
   margin-top: 1em;
   margin-left: 1em;
+  background-color: #bf211e;
 }
 
 #stats {

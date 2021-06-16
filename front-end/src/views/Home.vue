@@ -218,5 +218,6 @@ export default {
 
 button {
   margin-top: 1em;
+  background-color: #bf211e;
 }
 </style>
