@@ -641,6 +641,8 @@ button {
   text-align: left;
   padding-left: 1em;
   padding-right: 1em;
+  margin: auto;
+  margin-top: 2em;
 }
 
 .wonCards {
