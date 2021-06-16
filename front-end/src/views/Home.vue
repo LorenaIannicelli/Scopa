@@ -96,8 +96,8 @@
       <ul>
         <li>
           Look at your cards. If you have a card with the same value as a card
-          on the table, you can pick that card up and add both to your "won
-          cards" pile
+          on the table, you can use the card in your hand to pick up the
+          matching card on the table and add both to your "won cards" pile
         </li>
         <li>
           If you don't have a matching card, maybe you can do some math to pick
