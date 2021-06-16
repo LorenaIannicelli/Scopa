@@ -59,7 +59,8 @@
         </div>
         <li>
           There are 3 face-cards in the deck: ladies (8), horses (9), and kings
-          (10) (you can tell the ladies from the kings by their crowns)
+          (10) (you can tell the ladies from the kings by their crowns and
+          capes)
         </li>
         <div id="suits">
           <img class="card" src="/images/cards/clubs_l.jpg" />
