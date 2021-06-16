@@ -3,7 +3,8 @@
     <div id="nav">
       <router-link to="/play">
         <div id="gameLink">
-          <img id="italyPic" src="/images/italy.PNG" />
+          <img id="italyPic" src="/images/italy.PNG" alt="Play!" />
+          <p>Play game!</p>
         </div>
       </router-link>
 
@@ -31,9 +32,6 @@
 </template>
 
 <style>
-* {
-}
-
 #nav {
   padding: 30px;
   display: flex;
@@ -47,18 +45,35 @@
   width: 33%;
 }
 
+#gameLink p {
+  color: white;
+  font-size: 1.2em;
+  margin-top: 0em;
+  margin-bottom: 0em;
+  text-shadow: -1px -1px 0 #bf211e, 1px -1px 0 #bf211e, -1px 1px 0 #bf211e,
+    1px 1px 0 #bf211e;
+}
+
 #italyPic {
   width: 100%;
 }
 
 #scopa {
-  font-size: 2em;
+  font-size: 2.2em;
   color: #bf211e;
   text-decoration: none;
+  text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff,
+    1px 1px 0 #fff;
 }
 
 #profile {
   color: white;
+}
+
+#profileLink p {
+  font-size: 1.2em;
+  text-shadow: -1px -1px 0 #bf211e, 1px -1px 0 #bf211e, -1px 1px 0 #bf211e,
+    1px 1px 0 #bf211e;
 }
 
 #app {
