@@ -1,4 +1,5 @@
 # Scopa
+Visit scopa.lorenaiannicelli.org to play!! 
 
 This is a website to play the Italian card game: Scopa! 
 
